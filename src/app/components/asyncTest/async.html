@@ -1,0 +1,17 @@
+<img src="https://media.giphy.com/media/IUxQ84Gx1osg0/giphy.gif" /><br/>
+
+<button (click)="startSyncTest()" >Sync</button>
+
+<button (click)="startAsyncTest()" >Async</button>
+
+<button (click)="workerExamples()">Worker Examples </button>
+
+<button (click)="sswWorker_v2Test()" >SswWorker_v2 Test</button>
+<br/>
+After Meth: <br/>
+{{ functionCode }} <br/>
+{{ timeElapsed }}
+
+<input (ngModelChange)="patient.name = $event" /><br/>
+<input [(ngModel)]="patient.age" /><br/>
+{{patient.getInfo()}}
