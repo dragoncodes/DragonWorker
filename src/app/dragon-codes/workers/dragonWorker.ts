@@ -1,18 +1,19 @@
-import { SswWorkerCommand } from "./sswWorkerCommand_v2";
-import { SswWorkerOptions } from "./sswWorkerOptions";
+import { DragonWorkerCommand } from "./dragonWorkerCommand";
+import { SswWorkerOptions } from "./dragonWorkerOptions";
 
 import { DependencyList, DependencyResolver, ImplementationInjector } from "./classes";
 
 import { Observable } from "rxjs";
 
+import "../utils/strings";
 
-export interface SswWorkerResponse {
+export interface DragonWorkerResponse {
     originalEvent: MessageEvent;
     data: any;
     elapsedTime?: number;
 }
 
-export class SswWorker {
+export class DragonWorker {
 
     nativeWorker: Worker;
     workerBody: string;
@@ -30,14 +31,14 @@ export class SswWorker {
         }
     }
 
-    public static runCode(codeToRun: string | Function, context: any, options: SswWorkerOptions): Observable<SswWorkerResponse> {
-        let worker = new SswWorker(codeToRun, context);
+    public static runCode(codeToRun: string | Function, context: any, options: SswWorkerOptions): Observable<DragonWorkerResponse> {
+        let worker = new DragonWorker(codeToRun, context);
         return worker.run(options);
     }
 
-    public run(options: SswWorkerOptions): Observable<SswWorkerResponse> {
+    public run(options: SswWorkerOptions): Observable<DragonWorkerResponse> {
 
-        let observable: Observable<SswWorkerResponse> = Observable.create((subscriber) => {
+        let observable: Observable<DragonWorkerResponse> = Observable.create((subscriber) => {
 
             if (options.dependencies) {
                 this.injectArgDependencies(options.dependencies);
@@ -56,7 +57,7 @@ export class SswWorker {
                     this.nativeWorker.terminate();
                 }
 
-                let returnArgs: SswWorkerResponse = {
+                let returnArgs: DragonWorkerResponse = {
                     originalEvent: e,
                     data: e.data
                 };
@@ -108,7 +109,7 @@ export class SswWorker {
 
     private formWorkerBody(): void {
         let dependencyMap = this.dependencyMap;
-        let commandString: string = new SswWorkerCommand(this.codeToRun as Function).toCommandString();
+        let commandString: string = new DragonWorkerCommand(this.codeToRun as Function).toCommandString();
 
         for (let i = 0; i < dependencyMap.getLength(); i++) {
             this.workerBody += ImplementationInjector.inject(dependencyMap.get(i), "self");

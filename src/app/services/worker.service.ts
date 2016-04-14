@@ -4,7 +4,7 @@ import { IPatient } from "../models/patientModel";
 
 import { Observable } from "rxjs";
 
-import { SswWorker } from "../ssw/workers";
+import { DragonWorker } from "../dragon-codes/workers";
 
 class PU {
     public static getFullName(patient: IPatient): string {
@@ -30,7 +30,7 @@ export class WorkerService {
     }
 
     testWorkerError(){
-        return  SswWorker.runCode(`asdasdas`, this, {
+        return  DragonWorker.runCode(`asdasdas`, this, {
             workerArguments: [],
             dependencies: []
         }).map(res => {
@@ -39,7 +39,7 @@ export class WorkerService {
     }
 
     getPatientNames(patients: IPatient[]): Observable<string[]> {
-        return  SswWorker.runCode(PU.getPatientNames, this, {
+        return  DragonWorker.runCode(PU.getPatientNames, this, {
             workerArguments: [patients],
             dependencies: [PU]
         }).map(res => {

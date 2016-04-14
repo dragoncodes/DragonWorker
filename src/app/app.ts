@@ -4,8 +4,6 @@ import {FORM_PROVIDERS} from 'angular2/common';
 
 import '../style/app.scss';
 
-import "./ssw/utils/strings";
-
 import { AsyncTest } from "./components";
 
 import {Api} from './services/api/api';

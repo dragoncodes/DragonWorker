@@ -1,4 +1,4 @@
-export class SswWorkerCommand {
+export class DragonWorkerCommand {
 
     private static RETURN_LITERAL: string = "return";
     private static FUNCTION_LITERAL: string = "function";
@@ -23,7 +23,7 @@ export class SswWorkerCommand {
         originalFunction = this.handleAnomFunctions(originalFunction);
         originalFunction = this.plugParameters(originalFunction);
 
-        if (originalFunction.indexOf(SswWorkerCommand.RETURN_LITERAL) === -1) {
+        if (originalFunction.indexOf(DragonWorkerCommand.RETURN_LITERAL) === -1) {
             throw new Error("No return value provided !");
         }
 
@@ -31,15 +31,15 @@ export class SswWorkerCommand {
     }
 
     private plugParameters(originalFunction: string): string {
-        return originalFunction + SswWorkerCommand.ON_MESSAGE_TEMPLATE.replace("{1}", this.functionName);
+        return originalFunction + DragonWorkerCommand.ON_MESSAGE_TEMPLATE.replace("{1}", this.functionName);
     }
 
     private handleAnomFunctions(originalFunction: string): string {
-        let functionDeclarationIndex: number = originalFunction.indexOf(SswWorkerCommand.FUNCTION_LITERAL);
+        let functionDeclarationIndex: number = originalFunction.indexOf(DragonWorkerCommand.FUNCTION_LITERAL);
 
-        let index = functionDeclarationIndex + SswWorkerCommand.FUNCTION_LITERAL.length;
+        let index = functionDeclarationIndex + DragonWorkerCommand.FUNCTION_LITERAL.length;
         let functionName: string = "";
-        
+
         while (originalFunction[index] !== '(') {
             functionName += originalFunction[index];
             index++;
@@ -47,7 +47,7 @@ export class SswWorkerCommand {
 
         if (functionName.trim() === "") {
 
-            functionName = SswWorkerCommand.DEFAULT_MAIN_NAME + Date.now();
+            functionName = DragonWorkerCommand.DEFAULT_MAIN_NAME + Date.now();
             originalFunction = originalFunction.slice(0, index) + functionName + originalFunction.slice(index, originalFunction.length);
         }
 

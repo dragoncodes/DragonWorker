@@ -3,7 +3,7 @@ import {bootstrap, ELEMENT_PROBE_PROVIDERS} from 'angular2/platform/browser';
 import {ROUTER_PROVIDERS} from 'angular2/router';
 import {HTTP_PROVIDERS, BaseRequestOptions} from 'angular2/http';
 
-import { SswRequestOptions, SswExceptionHandler } from "./app/ssw/";
+import { DragonRequestOptions, DragonExceptionHandler } from "./app/dragon-codes/";
 
 const ENV_PROVIDERS = [];
 // depending on the env mode, enable prod mode or add debugging modules
@@ -25,24 +25,13 @@ import {App} from './app/app';
  */
 document.addEventListener('DOMContentLoaded', function main() {
 
-    // return platform([WORKER_APP_PLATFORM]).application([WORKER_APP_APPLICATION]).bootstrap(App, [
-    //     [
-    //         // These are dependencies of our App
-    //         ...HTTP_PROVIDERS,
-    //         ...ROUTER_PROVIDERS,
-    //         ...ENV_PROVIDERS,
-    //         provide(BaseRequestOptions, { useClass: SswRequestOptions }),
-    //         provide(ExceptionHandler, { useClass: SswExceptionHandler })
-    //         // provide(LocationStrategy, { useClass: HashLocationStrategy }) // use #/ routes, remove this for HTML5 mode
-    //     ]
-    // ]).catch(err => console.error(err));
     return bootstrap(App, [
         // These are dependencies of our App
         ...HTTP_PROVIDERS,
         ...ROUTER_PROVIDERS,
         ...ENV_PROVIDERS,
-        provide(BaseRequestOptions, { useClass: SswRequestOptions }),
-        provide(ExceptionHandler, { useClass: SswExceptionHandler })
+        provide(BaseRequestOptions, { useClass: DragonRequestOptions }),
+        provide(ExceptionHandler, { useClass: DragonExceptionHandler })
         // provide(LocationStrategy, { useClass: HashLocationStrategy }) // use #/ routes, remove this for HTML5 mode
     ])
         .catch(err => console.error(err));

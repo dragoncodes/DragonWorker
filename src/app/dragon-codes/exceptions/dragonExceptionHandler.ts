@@ -8,13 +8,13 @@ export interface GenericException {
 }
 
 @Injectable()
-export class SswExceptionHandler {
+export class DragonExceptionHandler {
 
     public static logError(error: GenericException): void {
         console.error(error);
     }
 
     call(error, stackTrace = null, reason = null) {
-        SswExceptionHandler.logError({ error: error, stackTrace: stackTrace, reason: reason });
+        DragonExceptionHandler.logError({ error: error, stackTrace: stackTrace, reason: reason });
     }
 }

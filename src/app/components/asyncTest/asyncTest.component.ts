@@ -1,48 +1,9 @@
 import { Component, OnInit, NgZone } from 'angular2/core';
 
-// import { SswWorker } from "../../ssw/workers";
-
-import { SswRequest } from "../../ssw/request/request";
+import { DragonHttp } from "../../dragon-codes/request/http";
 
 import { TestService } from "../../services/test.service";
 
-
-
-class IPatient {
-    // name: string;
-    // age: number;
-
-    constructor(public name: string, public age: number) {
-    }
-
-    getInfo() {
-        return this.name + " " + this.age;
-    }
-}
-
-/*
-{
-    name:"s",
-    age: 2
-}
-res : any[] => <IPatient>[]res; 
-*/
-
-
-class PU extends IPatient {
-
-    constructor(private patient: IPatient) {
-        super("s", 3);
-    }
-
-    static create() {
-        return <IPatient>{ name: "pesho", age: 2 };
-    }
-
-    getName(): string {
-        return this.patient.name + " " + this.patient.age;
-    }
-}
 
 @Component({
     selector: 'async',
@@ -58,8 +19,6 @@ export class AsyncTest implements OnInit {
     functionCode: string;
     timeElapsed: number;
     n: number;
-
-    patient = new IPatient("t", 2); // <IPatient>{};
 
     constructor(private zone: NgZone, private testService: TestService) {
         // Linter you suck
@@ -110,10 +69,6 @@ export class AsyncTest implements OnInit {
         //         console.log("Did " + e.data + " iterations in " + e.elapsedTime);
         //     }
         // });
-
-        console.log(this.patient);
-        this.patient.name = "TEST";
-
     }
 
     workerExamples(): void {
@@ -162,7 +117,7 @@ export class AsyncTest implements OnInit {
         // ------------------------------------------------
 
         // Example Fetch remote data and parse with worker
-        SswRequest.getHttp().get("/index.html").subscribe(res => {
+        DragonHttp.getHttp().get("/index.html").subscribe(res => {
 
             this.functionCode = res.text();
 
