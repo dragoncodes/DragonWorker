@@ -1,0 +1,24 @@
+{
+    "name": "workers",
+    "version": "0.0.1",
+    "description": "Wrapper for dynamic web workers",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "Web",
+        "Workers",
+        "Angular2",
+        "Typescript"
+    ],
+    "author": "Peter Marinov",
+    "license": "ISC",
+    "dependencies": {
+        "rxjs": "5.0.0-beta.2"
+    },
+    "devDependencies": {
+        "typescript": "^1.8.0",
+        "typings": "^0.6.8"
+    }
+}

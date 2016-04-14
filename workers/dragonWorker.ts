@@ -5,7 +5,7 @@ import { DependencyList, DependencyResolver, ImplementationInjector } from "./cl
 
 import { Observable } from "rxjs";
 
-import "../utils/strings";
+import "./utils/strings";
 
 export interface DragonWorkerResponse {
     originalEvent: MessageEvent;
@@ -68,23 +68,10 @@ export class DragonWorker {
 
                 subscriber.next(returnArgs);
                 subscriber.complete();
-
-                // if (options.contextZone) {
-                //     options.contextZone.run(() => {
-                //         options.doneCallback(returnArgs);
-                //     });
-                // } else {
-                //     options.doneCallback(returnArgs);
-                // }
             };
 
             this.nativeWorker.onerror = (error) => {
                 subscriber.error(error);
-                // if (options.errorCallback) {
-                //     options.errorCallback(error);
-                // } else {
-                console.error(error);
-                // }
             };
 
             if (options.elapsedTime === true) {

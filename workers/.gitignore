@@ -29,7 +29,7 @@ Icon?
 Thumbs.db
 
 # Node Files #
-example-project//node_modules
+example-project/node_modules
 /node_modules
 /bower_components
 
