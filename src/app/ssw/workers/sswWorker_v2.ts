@@ -1,198 +1,143 @@
-import { SswWorkerCommand_v2 } from "./sswWorkerCommand_v2";
+import { SswWorkerCommand } from "./sswWorkerCommand_v2";
 import { SswWorkerOptions } from "./sswWorkerOptions";
 
-interface SswWorkerResponse {
+import { DependencyList, DependencyResolver, ImplementationInjector } from "./classes";
+
+import { Observable } from "rxjs";
+
+
+export interface SswWorkerResponse {
     originalEvent: MessageEvent;
     data: any;
     elapsedTime?: number;
 }
 
-class FunctionParser {
-
-    private static REMOVE_SYMBOLS: RegExp = /[+-\/|&%*\[\]\"() ]/g;
-    private static REMOVE_ARGUMENTS: RegExp = / *\([^)]*\) */g;
-    private static REMOVE_PARTIAL_ARGUMENTS: RegExp = /\(.*$/g;
-
-    public static buildDependencyMap(fn: Function, context: any): { [name: string]: string } {
-        var codeBlob: string = fn.toString();
-        let dependencyMap: { [name: string]: string } = {};
-        // Find every this reference
-        // Substring from start of this to ;
-        // SplitBy("this") ->
-        // from result split by "."
-        // every [1st] index is main dependency from caller context
-
-
-        let thisIndex: number = codeBlob.indexOf("this");
-        while (thisIndex !== -1) {
-            let command: string = codeBlob.substring(thisIndex, codeBlob.indexOfAfter(";", thisIndex));
-
-            let thisStatements: string[] = command.split("this");
-            for (let i: number = 1; i < thisStatements.length; i++) {
-                // thisStatements[i] = thisStatements[i].replace(FunctionParser.REMOVE_ARGUMENTS, "").replace(FunctionParser.REMOVE_SYMBOLS, "");
-                let memberCalls: string[] = thisStatements[i].split(".");
-                memberCalls.shift();
-
-                // if (memberCalls.length > 1) {
-                // Nope . :(
-                // I will get here something like this
-                // [ "testService", "getId()" ]
-                // for (let j: number = 0; j < memberCalls.length; j++) {
-
-                //     let memberName: string = memberCalls[j].replace(FunctionParser.REMOVE_SYMBOLS, "").replace(FunctionParser.REMOVE_ARGUMENTS, "");
-
-                //     if (!dependencyMap[memberName] && context[memberName]) {
-                //         dependencyMap[memberName] = {
-                //             mapping: context[memberName],
-                //             type: MapableTypes.ReferencePass
-                //         };
-                //     }
-                // }
-
-                // } else if (memberCalls.length > 0) {
-                let memberName: string = memberCalls[0].replace(FunctionParser.REMOVE_PARTIAL_ARGUMENTS, "").replace(FunctionParser.REMOVE_ARGUMENTS, "").replace(FunctionParser.REMOVE_SYMBOLS, "")
-
-                if (!dependencyMap[memberName] && context[memberName]) {
-                    dependencyMap[memberName] = FunctionParser.getForwardDeclarationString(memberName, context[memberName]);
-                }
-                // }
-            }
-
-            thisIndex = codeBlob.indexOfAfter("this", thisIndex + 1);
-        }
-
-        return dependencyMap;
-    }
-
-    private static getForwardDeclarationString(name: string, implementation: any): string {
-        let mapableTemplate = "this.{1} = {2} ;";
-
-        if (implementation instanceof Function) {
-            return mapableTemplate.replace("{1}", name).replace("{2}", implementation.toString());
-        } else {
-            return mapableTemplate.replace("{1}", name).replace("{2}", JSON.stringify(implementation)); // (implementation.toString ? implementation.toString() : implementation.toString + ""));
-        }
-    }
-}
-
-/**
- * Wrapper for native Worker() class \n
- * Uses Blob to form dynamic URLs and run web workers with typescript
- */
-export class SswWorker_v2 {
+export class SswWorker {
 
     nativeWorker: Worker;
     workerBody: string;
-    context: any;
-    codeToRun: string | Function;
-    dependencyMap: { [name: string]: string } = {};
+    dependencyMap: DependencyList;
 
-    // dependencyMap: { [name: string]: string } = {};
-
-    /**
-     * @param codeToRun Code in string format or function
-     * @param dependencies?  @link(DependencyMapable)[]
-     * 
-     */
-    constructor(codeToRun: string | Function, context: any) {
-        this.codeToRun = codeToRun;
+    constructor(public codeToRun: string | Function, public context: any) {
         this.workerBody = "";
 
-        this.context = context;
-
         if (codeToRun instanceof Function) {
-
-            this.dependencyMap = FunctionParser.buildDependencyMap(this.codeToRun as Function, context);
+            this.dependencyMap = DependencyResolver.resolve(<Function>this.codeToRun, context);
 
             this.formWorkerBody();
+        } else {
+            this.workerBody = codeToRun;
         }
     }
 
-    public static runCode(codeToRun: string | Function, context: any, options: SswWorkerOptions): void | Worker {
-        let worker = new SswWorker_v2(codeToRun, context);
+    public static runCode(codeToRun: string | Function, context: any, options: SswWorkerOptions): Observable<SswWorkerResponse> {
+        let worker = new SswWorker(codeToRun, context);
         return worker.run(options);
     }
 
-    public run(options: SswWorkerOptions) {
+    public run(options: SswWorkerOptions): Observable<SswWorkerResponse> {
 
+        let observable: Observable<SswWorkerResponse> = Observable.create((subscriber) => {
 
-        if (!options.doneCallback) {
-            throw new Error("<SswWorkerOptions>.doneCallback not defined !");
-        }
-
-        if (this.workerBody.indexOf("postMessage") === -1) {
-            throw new Error("No return value or postMessage specified !");
-        }
-
-        let codeBlobUrl = URL.createObjectURL(new Blob([this.workerBody]));
-        this.nativeWorker = new Worker(codeBlobUrl);
-        let startTime: number;
-
-        this.nativeWorker.onmessage = (e) => {
-
-            if (options.noAutoTerminate !== true) {
-                this.nativeWorker.terminate();
+            if (options.dependencies) {
+                this.injectArgDependencies(options.dependencies);
             }
 
-            let returnArgs: SswWorkerResponse = {
-                originalEvent: e,
-                data: e.data
+            let codeBlobUrl = URL.createObjectURL(new Blob([this.workerBody]));
+            this.nativeWorker = new Worker(codeBlobUrl);
+
+            console.log("Code ran", this.workerBody);
+
+            let startTime: number;
+
+            this.nativeWorker.onmessage = (e) => {
+
+                if (options.noAutoTerminate !== true) {
+                    this.nativeWorker.terminate();
+                }
+
+                let returnArgs: SswWorkerResponse = {
+                    originalEvent: e,
+                    data: e.data
+                };
+
+                if (options.elapsedTime === true) {
+                    returnArgs.elapsedTime = Date.now() - startTime;
+                }
+
+                subscriber.next(returnArgs);
+                subscriber.complete();
+
+                // if (options.contextZone) {
+                //     options.contextZone.run(() => {
+                //         options.doneCallback(returnArgs);
+                //     });
+                // } else {
+                //     options.doneCallback(returnArgs);
+                // }
+            };
+
+            this.nativeWorker.onerror = (error) => {
+                subscriber.error(error);
+                // if (options.errorCallback) {
+                //     options.errorCallback(error);
+                // } else {
+                console.error(error);
+                // }
             };
 
             if (options.elapsedTime === true) {
-                returnArgs.elapsedTime = Date.now() - startTime;
+                startTime = Date.now();
             }
 
-            if (options.contextZone) {
-                options.contextZone.run(() => {
-                    options.doneCallback(returnArgs);
-                });
-            } else {
-                options.doneCallback(returnArgs);
-            }
-        };
+            this.nativeWorker.postMessage(this.getPostMessage(options));
+        });
 
-        this.nativeWorker.onerror = (error) => {
-            if (options.errorCallback) {
-                options.errorCallback(error);
-            } else {
-                console.error( error );
-            }
-        };
-
-        if (options.elapsedTime === true) {
-            startTime = Date.now();
-        }
-
-        this.nativeWorker.postMessage(this.getPostMessage(options));
-
-        if (options.noAutoTerminate !== true) {
-            return this.nativeWorker;
-        }
+        return observable;
     }
 
     private getPostMessage(options: SswWorkerOptions): any {
         let workerArguments = options.workerArguments;
 
-        let message: any;
-
         if (workerArguments) {
-            message = workerArguments;
-        } else {
-            message = "start";
+            return workerArguments;
         }
 
-        return message;
+        return "start";
     }
 
     private formWorkerBody(): void {
         let dependencyMap = this.dependencyMap;
-        let commandString: string = new SswWorkerCommand_v2(this.codeToRun as Function).toCommandString();
+        let commandString: string = new SswWorkerCommand(this.codeToRun as Function).toCommandString();
 
-        for (let key in dependencyMap) {
-            this.workerBody += dependencyMap[key] + "\n";
+        for (let i = 0; i < dependencyMap.getLength(); i++) {
+            this.workerBody += ImplementationInjector.inject(dependencyMap.get(i), "self");
         }
 
         this.workerBody += commandString;
+    }
+
+    private injectArgDependencies(dependencies: any[]): void {
+        let newBody = "";
+        let workerBody = this.workerBody;
+
+        for (let i = 0; i < dependencies.length; i++) {
+            let dependency = dependencies[i];
+            let mainName = dependency instanceof Function ? dependency.name : dependency;
+
+            let fnNames = Object.getOwnPropertyNames(dependency).filter((propName) => {
+                return typeof dependency[propName] === 'function';
+            });
+
+            newBody += ImplementationInjector.inject({ name: mainName, implementation: "{}" }, "self");
+
+            fnNames.forEach((fnName) => {
+                if (workerBody.indexOf(dependency[fnName].toString().replace("function", "").trim()) === -1) {
+                    newBody += ImplementationInjector.inject({ name: mainName + "." + fnName, implementation: dependency[fnName].toString() }, "self");
+                }
+            });
+        }
+
+        this.workerBody = newBody + this.workerBody;
     }
 }

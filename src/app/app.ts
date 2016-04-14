@@ -28,7 +28,7 @@ import {About} from "./components/about/about";
 @RouteConfig([
     { path: '/async', component: AsyncTest, name: "Async Test" },
     { path: '/', component: Home, name: 'Home' },
-    { path: '/About', component: About, name: 'About' }
+    { path: '/about', component: About, name: 'About' }
 ])
 export class App {
 

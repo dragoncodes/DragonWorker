@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from 'angular2/core';
 
-import { SswWorker, SswWorker_v2 } from "../../ssw/workers";
+// import { SswWorker } from "../../ssw/workers";
 
 import { SswRequest } from "../../ssw/request/request";
 
@@ -104,12 +104,12 @@ export class AsyncTest implements OnInit {
     }
 
     startAsyncTest(): void {
-        SswWorker.runCode(this.performanceTest, {
-            elapsedTime: true,
-            doneCallback: (e) => {
-                console.log("Did " + e.data + " iterations in " + e.elapsedTime);
-            }
-        });
+        // SswWorker_v2.runCode(this.performanceTest, this, {
+        //     elapsedTime: true,
+        //     doneCallback: (e) => {
+        //         console.log("Did " + e.data + " iterations in " + e.elapsedTime);
+        //     }
+        // });
 
         console.log(this.patient);
         this.patient.name = "TEST";
@@ -118,14 +118,14 @@ export class AsyncTest implements OnInit {
 
     workerExamples(): void {
         // SswWorker example dependencies
-        let worker: SswWorker_v2 = new SswWorker_v2(this.asyncSubTask1, this);
+        // let worker: SswWorker = new SswWorker(this.asyncSubTask1, this);
 
-        worker.run({
-            workerArguments: [this.n],
-            doneCallback: (e) => {
-                console.log(e);
-            }
-        });
+        // worker.run({
+        //     workerArguments: [this.n],
+        //     doneCallback: (e) => {
+        //         console.log(e);
+        //     }
+        // });
         // -------------------------------
 
         // SswWorker example http request - DOESN'T WORK
@@ -166,19 +166,19 @@ export class AsyncTest implements OnInit {
 
             this.functionCode = res.text();
 
-            SswWorker.runCode((html: string) => {
-                setTimeout(() => {
-                    return html.replace(/body/g, "HOT_BODY").replace(/head/g, "POT_HEAD").replace(/html/g, "NO_HTML");
-                }, 2000);
-            }, {
-                    doneCallback: (e) => {
-                        console.log(e);
+            // SswWorker.runCode((html: string) => {
+            //     setTimeout(() => {
+            //         return html.replace(/body/g, "HOT_BODY").replace(/head/g, "POT_HEAD").replace(/html/g, "NO_HTML");
+            //     }, 2000);
+            // }, {
+            //         doneCallback: (e) => {
+            //             console.log(e);
 
-                        this.functionCode = e.data;
-                    },
-                    workerArguments: [res.text()],
-                    contextZone: this.zone // Pass zone to update the view
-                });
+            //             this.functionCode = e.data;
+            //         },
+            //         workerArguments: [res.text()],
+            //         contextZone: this.zone // Pass zone to update the view
+            //     });
         });
 
     }
@@ -204,18 +204,18 @@ export class AsyncTest implements OnInit {
         return i;
     }
 
-    private parseJson(json): number {
+    private parseJson(json): string {
         let name: number = 0;
 
         for (var i = 0; i < json.length; i++) {
             var element = json[i];
 
             for (var key in element) {
-                name +=  parseInt(element[key]);
+                name += parseInt(element[key]);
             }
         }
 
-        return name;
+        return name + this.asyncSubTask1(2) + "";
     }
 
     private sswWorker_v2Test(): void {
@@ -228,20 +228,33 @@ export class AsyncTest implements OnInit {
         //     }
         // });
 
+        // Inner functions
+        // SswWorker_v2.runCode(() => {
+
+        //     function wtf(n) {
+        //         return n + 1 + this.test();
+        //     }
+
+        //     return wtf(5) + 5;
+        // }, this, {
+        //         doneCallback: (e) => {
+        //             console.log(e);
+        //         }
+        //     });
 
         // Passing JSON
-        SswRequest.getHttp().get("/mock.json").map(res => res.json()).subscribe((jsonRes) => {
+        // SswRequest.getHttp().get("/mock.json").map(res => res.json()).subscribe((jsonRes) => {
 
-            SswWorker_v2.runCode((json) => {
-                return this.parseJson(json);
-            }, this, {
-                    elapsedTime: true,
-                    workerArguments: [jsonRes.data],
-                    doneCallback: (e) => {
-                        console.log(e);
-                    }
-                });
-        });
+        //     SswWorker_v2.runCode((json) => {
+        //         return this.parseJson(json);
+        //     }, this, {
+        //             elapsedTime: true,
+        //             workerArguments: [jsonRes.data],
+        //             doneCallback: (e) => {
+        //                 console.log(e);
+        //             }
+        //         });
+        // });
 
 
         // Complex dependencies
