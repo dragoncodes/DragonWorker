@@ -1,15 +1,9 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
-import {FORM_PROVIDERS} from 'angular2/common';
 
 import '../style/app.scss';
 
-import { AsyncTest } from "./components";
-
-import {Api} from './services/api/api';
 import {Home} from './components/home/home';
-import {About} from "./components/about/about";
-
 
 /*
  * App Component
@@ -17,19 +11,17 @@ import {About} from "./components/about/about";
  */
 @Component({
     selector: 'app', // <app></app>
-    providers: [...FORM_PROVIDERS, Api],
+    providers: [],
     directives: [...ROUTER_DIRECTIVES],
     pipes: [],
     styles: [require('./app.scss')],
     template: require('./app.html')
 })
 @RouteConfig([
-    { path: '/async', component: AsyncTest, name: "Async Test" },
-    { path: '/', component: Home, name: 'Home' },
-    { path: '/about', component: About, name: 'About' }
+    { path: '/', component: Home, name: 'Home', useAsDefault: true },
 ])
 export class App {
-
-    constructor(public api: Api) {
+    constructor() {
+        //
     }
 }

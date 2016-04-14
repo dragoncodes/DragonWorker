@@ -2,6 +2,8 @@ import { Component, OnInit, NgZone } from 'angular2/core';
 
 import { DragonHttp } from "../../dragon-codes/request/http";
 
+import { DragonWorker } from "../../dragon-codes/workers";
+
 import { TestService } from "../../services/test.service";
 
 
@@ -21,14 +23,10 @@ export class AsyncTest implements OnInit {
     n: number;
 
     constructor(private zone: NgZone, private testService: TestService) {
-        // Linter you suck
-        // PatientUtils.create(this.patient);
-        // console.log(PU.create().getInfo());
         this.n = 15;
     }
 
     ngOnInit() {
-        // Linter you're fucking annoying
     }
 
     test() {
@@ -57,18 +55,15 @@ export class AsyncTest implements OnInit {
         return elapsedTime;
     }
 
-    startTest(): void {
-        console.log("Operation started --------");
-        this.start = Date.now();
-    }
+    
 
     startAsyncTest(): void {
-        // SswWorker_v2.runCode(this.performanceTest, this, {
-        //     elapsedTime: true,
-        //     doneCallback: (e) => {
-        //         console.log("Did " + e.data + " iterations in " + e.elapsedTime);
-        //     }
-        // });
+        DragonWorker.runCode(this.performanceTest, this, {
+            elapsedTime: true,
+            // doneCallback: (e) => {
+                // console.log("Did " + e.data + " iterations in " + e.elapsedTime);
+            // }
+        }).subscribe();
     }
 
     workerExamples(): void {
