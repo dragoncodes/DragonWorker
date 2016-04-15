@@ -30,6 +30,7 @@ Thumbs.db
 
 # Node Files #
 example-project/node_modules
+workers/node_modules
 /node_modules
 /bower_components
 
