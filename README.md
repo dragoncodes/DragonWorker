@@ -1,8 +1,18 @@
 # DragonWorker
 Typescript wrapper for dynamic Web Workers
-
-
 A pretty basic helper for simple async operations like parsing large JSON arrays.
+
+## Installation
+npm install --save [path to workers]/workers/packaged/dragon-worker-0.0.1.tgz
+
+Or you can add 
+``` json
+... ,
+"dragon-worker": "file: [path to workers]/workers/worker-module/"
+...
+```
+
+Or you can build the src folder yourself
 
 ## Examples
 
