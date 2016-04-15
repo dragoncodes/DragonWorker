@@ -1,17 +1,17 @@
 "use strict";
-var DependencyList = (function () {
-    function DependencyList() {
+class DependencyList {
+    constructor() {
         this.list = {};
     }
-    DependencyList.prototype.has = function (key) {
+    has(key) {
         return !!this.list[key];
-    };
-    DependencyList.prototype.getLength = function () {
+    }
+    getLength() {
         return Object.keys(this.list).length;
-    };
-    DependencyList.prototype.get = function (index) {
-        var counter = 0;
-        var key;
+    }
+    get(index) {
+        let counter = 0;
+        let key;
         for (key in this.list) {
             if (index === counter) {
                 break;
@@ -19,25 +19,24 @@ var DependencyList = (function () {
             counter++;
         }
         return { name: key, implementation: this.list[key] };
-    };
-    DependencyList.prototype.add = function (mapable) {
+    }
+    add(mapable) {
         mapable.implementation = mapable.implementation.toString ? mapable.implementation.toString() : mapable.implementation + "";
         this.list[mapable.name] = mapable.implementation;
-    };
-    DependencyList.prototype.concat = function (other) {
-        for (var key in other.list) {
+    }
+    concat(other) {
+        for (let key in other.list) {
             if (this.list[key]) {
                 continue;
             }
             this.list[key] = other.list[key];
         }
-    };
-    DependencyList.prototype.preConcat = function (other) {
-        var newList = new DependencyList();
+    }
+    preConcat(other) {
+        let newList = new DependencyList();
         newList.concat(other);
         newList.concat(this);
         this.list = newList.list;
-    };
-    return DependencyList;
-}());
+    }
+}
 exports.DependencyList = DependencyList;
