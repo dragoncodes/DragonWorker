@@ -4,7 +4,7 @@
         "target": "es5",
         "module": "commonjs",
         "noImplicitAny": false,
-        "removeComments": true,
+        "removeComments": false,
         "noLib": false,
         "preserveConstEnums": true,
         "declaration": true,
@@ -26,8 +26,5 @@
         "./dragonWorkerOptions.ts",
         "./index.ts",
         "./utils/strings.ts"
-    ],
-    "atom": {
-        "rewriteTsconfig": true
-    }
+    ]
 }
