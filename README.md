@@ -7,6 +7,7 @@ A pretty basic helper for simple async operations like parsing large JSON arrays
 ## Examples
 
 #### Basic Task
+
 ``` typescript 
 performanceTest(): any {
 
@@ -43,4 +44,51 @@ asyncTest(): void {
             console.log(e.elapsedTime);
         });
     }
+```
+#### Dependency Chain
+``` typescript
+constructor(){
+        this.n = 15;
+}
+
+asyncSubTask2(){
+        return 1;
+}
+
+asyncSubTask(){
+        return this.n + 1 + this.asyncSubTask2();
+}
+
+asyncTest(): void {
+
+        DragonWorker.runCode(this.asyncSubTask, this, { elapsedTime: true }).subscribe((e) => {
+            console.log(e.data); // -> 17
+            console.log(e.originalEvent);
+            console.log(e.elapsedTime);
+        });
+    }
+
+```
+
+#### Passing Arguments
+Note: Passing objects is not supported
+
+``` typescript
+constructor(){
+        this.n = 15;
+}
+
+asyncSubTask(n: number){
+        return this.n + 1 + n;
+}
+
+asyncTest(): void {
+
+        DragonWorker.runCode(this.asyncSubTask, this, { elapsedTime: true, workerArguments: [this.n] }).subscribe((e) => {
+            console.log(e.data); // -> 31
+            console.log(e.originalEvent);
+            console.log(e.elapsedTime);
+        });
+    }
+
 ```
