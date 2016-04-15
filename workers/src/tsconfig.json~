@@ -1,0 +1,33 @@
+{
+    "version": "1.5.0-alpha",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "declaration": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "../js"
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./classes/dependencyList.ts",
+        "./classes/dependencyMapable.ts",
+        "./classes/dependencyResolver.ts",
+        "./classes/implementationInjector.ts",
+        "./classes/index.ts",
+        "./dragonWorker.ts",
+        "./dragonWorkerCommand.ts",
+        "./dragonWorkerOptions.ts",
+        "./index.ts",
+        "./utils/strings.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}

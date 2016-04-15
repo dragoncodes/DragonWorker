@@ -4,7 +4,7 @@ import { IPatient } from "../models/patientModel";
 
 import { Observable } from "rxjs";
 
-import { DragonWorker } from "../dragon-codes/workers";
+import { DragonWorker } from "dragon-worker";
 
 class PU {
     public static getFullName(patient: IPatient): string {

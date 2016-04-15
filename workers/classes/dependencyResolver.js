@@ -11,7 +11,7 @@ var DependencyResolver = (function () {
             var commandEnd = rawDependency.indexOfAfter(DependencyResolver.COMMAND_END_LITERAL, thisIndex);
             var commandString = rawDependency.substring(thisIndex, commandEnd);
             var subCommands = commandString.split(DependencyResolver.THIS_LITERAL);
-            subCommands.shift(); // First is ""
+            subCommands.shift();
             for (var i = 0; i < subCommands.length; i++) {
                 var subCommand = subCommands[i];
                 subCommand = subCommand.replace(DependencyResolver.REMOVE_PARTIAL_ARGUMENTS, "")

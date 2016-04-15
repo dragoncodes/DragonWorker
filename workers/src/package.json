@@ -1,0 +1,29 @@
+{
+    "name": "dragon-worker",
+    "version": "0.0.1",
+    "description": "Wrapper for dynamic web workers",
+    "main": "index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "Web",
+        "Workers",
+        "Angular2",
+        "Typescript"
+    ],
+    "author": "Peter Marinov",
+    "license": "ISC",
+    "dependencies": {
+        "ts-npm-module": "^1.0.5",
+        "rxjs": "5.0.0-beta.2",
+        "reflect-metadata": "0.1.2",
+        "es6-shim": "^0.35.0"
+    },
+    "devDependencies": {
+        "reflect-metadata": "0.1.2",
+        "es6-shim": "^0.35.0",
+        "typescript": "^1.8.0",
+        "typings": "^0.6.8"
+    }
+}

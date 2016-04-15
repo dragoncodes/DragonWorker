@@ -1,6 +1,6 @@
 import {Component, OnInit} from 'angular2/core';
 
-import { DragonWorker } from "../../dragon-codes/workers";
+import { DragonWorker } from "dragon-worker";
 
 import {NgZone} from "angular2/core";
 
@@ -49,7 +49,7 @@ export class Home implements OnInit {
 
     performanceTest(): any {
 
-        let n = 1000000;
+        let n = 50000;
         let i;
         for (i = 0; i < n; i++) {
             let a = new Date("2016-01-01");

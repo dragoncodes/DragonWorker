@@ -2,14 +2,12 @@ import { Component, OnInit, NgZone } from 'angular2/core';
 
 import { DragonHttp } from "../../dragon-codes/request/http";
 
-import { DragonWorker } from "../../dragon-codes/workers";
-
-import { TestService } from "../../services/test.service";
+import { DragonWorker } from "dragon-worker";
 
 
 @Component({
     selector: 'async',
-    providers: [TestService],
+    providers: [],
     template: require('./async.html')
 })
 export class AsyncTest implements OnInit {
@@ -22,11 +20,12 @@ export class AsyncTest implements OnInit {
     timeElapsed: number;
     n: number;
 
-    constructor(private zone: NgZone, private testService: TestService) {
+    constructor(private zone: NgZone) {
         this.n = 15;
     }
 
     ngOnInit() {
+        //
     }
 
     test() {
@@ -55,13 +54,13 @@ export class AsyncTest implements OnInit {
         return elapsedTime;
     }
 
-    
+
 
     startAsyncTest(): void {
         DragonWorker.runCode(this.performanceTest, this, {
             elapsedTime: true,
             // doneCallback: (e) => {
-                // console.log("Did " + e.data + " iterations in " + e.elapsedTime);
+            // console.log("Did " + e.data + " iterations in " + e.elapsedTime);
             // }
         }).subscribe();
     }
@@ -134,7 +133,7 @@ export class AsyncTest implements OnInit {
     }
 
     startSyncTest(): void {
-        this.startTest();
+        // this.startTest();
         this.performanceTest();
         let data = this.showOperationTime();
 

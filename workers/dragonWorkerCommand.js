@@ -19,7 +19,7 @@ var DragonWorkerCommand = (function () {
         var functionDeclarationIndex = originalFunction.indexOf(DragonWorkerCommand.FUNCTION_LITERAL);
         var index = functionDeclarationIndex + DragonWorkerCommand.FUNCTION_LITERAL.length;
         var functionName = "";
-        while (originalFunction[index] !== '(') {
+        while (originalFunction[index] !== "(") {
             functionName += originalFunction[index];
             index++;
         }
@@ -32,7 +32,7 @@ var DragonWorkerCommand = (function () {
     };
     DragonWorkerCommand.RETURN_LITERAL = "return";
     DragonWorkerCommand.FUNCTION_LITERAL = "function";
-    DragonWorkerCommand.DEFAULT_MAIN_NAME = "SswWorker";
+    DragonWorkerCommand.DEFAULT_MAIN_NAME = "DragonWorker";
     DragonWorkerCommand.ON_MESSAGE_TEMPLATE = "\n    \n    // ------------------------------\n    self.onmessage = (e) => { \n\n        postMessage({1}(... e.data)); \n\n    }; \n\n    // ------------------------------";
     return DragonWorkerCommand;
 }());
