@@ -1,10 +1,13 @@
 import { Injectable } from 'angular2/core';
 
-import { IPatient } from "../models/patientModel";
-
 import { Observable } from "rxjs";
 
 import { DragonWorker } from "dragon-worker";
+
+export interface IPatient {
+    firstName: string;
+    lastName: string;
+}
 
 class PU {
     public static getFullName(patient: IPatient): string {
@@ -27,15 +30,6 @@ export class WorkerService {
 
     constructor() {
         //
-    }
-
-    testWorkerError(){
-        return  DragonWorker.runCode(`asdasdas`, this, {
-            workerArguments: [],
-            dependencies: []
-        }).map(res => {
-            return res.data;
-        });
     }
 
     getPatientNames(patients: IPatient[]): Observable<string[]> {

@@ -47,8 +47,6 @@ export class DragonWorker {
             let codeBlobUrl = URL.createObjectURL(new Blob([this.workerBody]));
             this.nativeWorker = new Worker(codeBlobUrl);
 
-            console.log("Code ran", this.workerBody);
-
             let startTime: number;
 
             this.nativeWorker.onmessage = (e) => {

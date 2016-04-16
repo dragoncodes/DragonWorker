@@ -1,17 +1,17 @@
 "use strict";
-class DependencyList {
-    constructor() {
+var DependencyList = (function () {
+    function DependencyList() {
         this.list = {};
     }
-    has(key) {
+    DependencyList.prototype.has = function (key) {
         return !!this.list[key];
-    }
-    getLength() {
+    };
+    DependencyList.prototype.getLength = function () {
         return Object.keys(this.list).length;
-    }
-    get(index) {
-        let counter = 0;
-        let key;
+    };
+    DependencyList.prototype.get = function (index) {
+        var counter = 0;
+        var key;
         for (key in this.list) {
             if (index === counter) {
                 break;
@@ -19,24 +19,25 @@ class DependencyList {
             counter++;
         }
         return { name: key, implementation: this.list[key] };
-    }
-    add(mapable) {
+    };
+    DependencyList.prototype.add = function (mapable) {
         mapable.implementation = mapable.implementation.toString ? mapable.implementation.toString() : mapable.implementation + "";
         this.list[mapable.name] = mapable.implementation;
-    }
-    concat(other) {
-        for (let key in other.list) {
+    };
+    DependencyList.prototype.concat = function (other) {
+        for (var key in other.list) {
             if (this.list[key]) {
                 continue;
             }
             this.list[key] = other.list[key];
         }
-    }
-    preConcat(other) {
-        let newList = new DependencyList();
+    };
+    DependencyList.prototype.preConcat = function (other) {
+        var newList = new DependencyList();
         newList.concat(other);
         newList.concat(this);
         this.list = newList.list;
-    }
-}
+    };
+    return DependencyList;
+}());
 exports.DependencyList = DependencyList;

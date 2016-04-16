@@ -3,6 +3,7 @@ import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import '../style/app.scss';
 
+import {ExamplesComponent} from "./components/examples/";
 import {Home} from './components/home/home';
 
 /*
@@ -19,6 +20,7 @@ import {Home} from './components/home/home';
 })
 @RouteConfig([
     { path: '/', component: Home, name: 'Home', useAsDefault: true },
+    { path: '/examples', component: ExamplesComponent, name: "Examples" }
 ])
 export class App {
     constructor() {
